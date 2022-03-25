@@ -23,4 +23,6 @@ if __name__ == "__main__":
         host = getenv("HBNB_API_HOST")
     if getenv("HBNB_API_PORT"):
         port = getenv("HBNB_API_PORT")
+    print(port)
+    print(host)
     app.run(host=host, port=port)
