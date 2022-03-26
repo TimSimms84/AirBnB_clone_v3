@@ -81,7 +81,7 @@ class DBStorage:
         """
         if cls not in classes.values():
             return None
-        
+
         if cls and id:
             all_objs = models.storage.all(cls)
             for v in all_objs.values():
@@ -89,9 +89,8 @@ class DBStorage:
                     return v
         return None
 
-
     def count(self, cls=None):
-        """Returns the number of objects in storage matching the 
+        """Returns the number of objects in storage matching the
         given class. If no class is passed, returns the count of
         all objects in storage"""
         return (len(models.storage.all(cls)))
