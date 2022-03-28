@@ -9,9 +9,11 @@ from api.v1.views import app_views
 from models.state import State
 from models import storage
 
+
 @app_views.route("/states", methods=['GET'])
 @app_views.route("/states/<state_id>", methods=['GET'])
 def states(state_id=None):
+    """Returns all states or a state by specific ID"""
     if state_id:
         obj = storage.get(State, state_id)
         if obj is not None:
@@ -27,6 +29,7 @@ def states(state_id=None):
 
 @app_views.route("/states/<state_id>", methods=['DELETE'])
 def state_delete(state_id):
+    """deletes a state by ID"""
     if state_id:
         obj = storage.get(State, state_id)
         if obj is not None:

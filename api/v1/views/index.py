@@ -11,9 +11,10 @@ def status():
     resp = {"status": "OK"}
     return jsonify(resp)
 
+
 @app_views.route('/stats')
 def stats():
-    """return number of stat"""
+    """return number of stats"""
     return jsonify({"amenities": storage.count("Amenity"),
                     "cities": storage.count("City"),
                     "places": storage.count("Place"),
