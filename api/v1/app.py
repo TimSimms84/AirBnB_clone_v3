@@ -5,15 +5,13 @@ from flask import Flask, jsonify, Blueprint
 from models import storage
 from os import getenv
 
-
 app = Flask(__name__)
-app.url_map.strict_slashes = False
 app.register_blueprint(app_views)
 
 
 @app.teardown_appcontext
-def teardown_app(cont):
-    """teardown app_context"""
+def teardown_app(exception):
+    """teardown app_context by calling storage.close()"""
     storage.close()
 
 
