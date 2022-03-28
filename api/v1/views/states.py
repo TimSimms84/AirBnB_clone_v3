@@ -1,88 +1,71 @@
 #!/usr/bin/python3
-'''handles api routes for State class'''
+"""
+Task 7
+"""
+
+import re
+from flask import jsonify, request, make_response, abort
+# from api.v1.app import page_not_found
 from api.v1.views import app_views
-from models import storage
-from datetime import datetime
-import flask
-from models.amenity import Amenity
-from models.city import City
-from models.place import Place
-from models.review import Review
 from models.state import State
-from models.user import User
-modelsDict = {
-    "amenities": Amenity,
-    "cities": City,
-    "places": Place,
-    "reviews": Review,
-    "states": State,
-    "users": User
-}
-
-@app_views.route('/states', methods=['GET'], strict_slashes=False)
-@app_views.route('/states/<id>', methods=['GET'], strict_slashes=False)
-def st_get(id=None):
-    '''return all states unless id present, then check id and return
-    single if present else 404 page
-    '''
-    if id is None:
-        return flask.jsonify([ob.to_dict() for ob in storage.all(
-            modelsDict['states']).values()]
-        )
-
-    try:
-        return flask.jsonify(storage.all()['State.' + id].to_dict())
-    except Exception:
-        flask.abort(404)
+from models import storage
 
 
-@app_views.route('/states/<id>', methods=['DELETE'], strict_slashes=False)
-def st_del(id=None):
-    '''delete State by id, return blank json on success else 404 page'''
-    if storage.get("State", id):
-        storage.get('State', id).delete()
-        storage.save()
-        return flask.make_response({}, 200)
+@app_views.route("/states", methods=['GET'], strict_slashes=False)
+@app_views.route("/states/<state_id>", methods=['GET'], strict_slashes=False)
+def states(state_id=None):
+    """Returns all states or a state by specific ID"""
+    print("IN")
+    if state_id:
+        obj = storage.get(State, state_id)
+        if obj is not None:
+            return obj.to_dict()
+        else:
+            return abort(404)
     else:
-        flask.abort(404)
+        states = storage.all(State)
+        statelist = []
+        for state in states.values():
+            statelist.append(state.to_dict())
+        return jsonify(statelist)
 
 
-@app_views.route('/states', methods=['POST'], strict_slashes=False)
-def st_post():
-    '''create State with input JSON'''
-    new_st = flask.request.get_json()
-    if not new_st:
-        flask.abort(400, 'Not a JSON')
-    if 'name' not in new_st.keys():
-        flask.abort(400, 'Missing name')
-    st = modelsDict['states'](**new_st)
-    storage.new(st)
+@app_views.route("/states/<state_id>", methods=['DELETE'],
+                 strict_slashes=False)
+def state_delete(state_id):
+    """deletes a state by ID"""
+    state = storage.get(State, state_id)
+    if state is None:
+        abort(404)
+    state.delete()
     storage.save()
-    return flask.make_response(st.to_dict(), 201)
+    return jsonify({})
 
 
-@app_views.route('/states/<id>', methods=['PUT'], strict_slashes=False)
-def st_put(id=None):
-    '''update State by id, return updated State else 404 page'''
-    try:
-        storage.all()['State.' + id].to_dict()
-    except Exception:
-        flask.abort(404)
-    up_st = flask.request.get_json()
-    if not up_st:
-        flask.abort(400, 'Not a JSON')
-    for key in up_st:
-        if key not in ['id', 'update_at', 'created_at']:
-            setattr(
-                storage.all()['State.' + id],
-                key,
-                up_st[key]
-            )
-    # may cause checker issue because updated_at wasn't ignored
-    setattr(
-        storage.all()['State.' + id],
-        'updated_at',
-        datetime.now()
-    )
+@app_views.route("/states/", methods=['POST'], strict_slashes=False)
+def post_state():
+    """add state using POST"""
+    if not request.get_json():
+        return make_response(jsonify({"error": "Not a JSON"}), 400)
+    if "name" not in request.get_json():
+        return make_response(jsonify({"error": "Missing Name"}), 400)
+    state = State(**request.get_json())
+    state.save()
+    return make_response(jsonify(state.to_dict()), 201)
+
+
+@app_views.route("/states/<state_id>", methods=['PUT'], strict_slashes=False)
+def put_state(state_id):
+    """update a state using PUT"""
+    state = storage.get(State, state_id)
+    if state is None:
+        abort(404)
+    if not request.get_json():
+        return make_response(jsonify({"error": "Not a JSON"}), 400)
+    notThese = ["id", "created_at", "updated_at"]
+    data = request.get_json()
+    for key, value in data.items():
+        if key not in notThese:
+            setattr(state, key, value)
     storage.save()
-    return flask.make_response(storage.all()['State.' + id].to_dict(), 200)
+    return make_response(jsonify(state.to_dict()), 400)
