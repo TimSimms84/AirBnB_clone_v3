@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""Task 6"""
+"""Sets up an endpoint to return status of API"""
 from api.v1.views import app_views
 from flask import Flask, jsonify, Blueprint
 from models import storage
