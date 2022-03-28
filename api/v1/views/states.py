@@ -27,6 +27,7 @@ def states(state_id=None):
             statelist.append(state.to_dict())
         return jsonify(statelist)
 
+
 @app_views.route("/states/<state_id>", methods=['DELETE'])
 def state_delete(state_id):
     """deletes a state by ID"""
