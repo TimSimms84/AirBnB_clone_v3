@@ -53,3 +53,14 @@ def city_post(state_id, city_id):
                 storage.get(_obj)
             else:
                 return page_not_found(404)
+
+@app_views.route("/cities/<city_id>", methods=['PUT'], strict_slashes=False)
+def city_put(city_id):
+    if not request.get_json():
+        return jsonify({"error": "Not a JSON"}, 400)
+    if city_id:
+        obj = storage.get(City, city_id)
+        if obj is not None:
+            storage.get(obj)
+        else:
+            return page_not_found(404)
