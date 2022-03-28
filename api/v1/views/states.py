@@ -15,7 +15,6 @@ from models import storage
 @app_views.route("/states/<state_id>", methods=['GET'], strict_slashes=False)
 def states(state_id=None):
     """Returns all states or a state by specific ID"""
-    print("IN")
     if state_id:
         obj = storage.get(State, state_id)
         if obj is not None:
