@@ -7,6 +7,7 @@ from api.v1.views import app_views
 
 
 app = Flask(__name__)
+app.url_map.strict_slashes = False
 app.register_blueprint(app_views)
 
 
@@ -14,6 +15,7 @@ app.register_blueprint(app_views)
 def teardown_appcontext(cont):
     """teardown app_context"""
     storage.close()
+
 
 @app.errorhandler(404)
 def page_not_found(error):
