@@ -4,7 +4,6 @@ Task 7
 """
 
 from flask import jsonify, request, make_response, abort
-# from api.v1.app import page_not_found
 from api.v1.views import app_views
 from models.state import State
 from models import storage
