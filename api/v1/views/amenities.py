@@ -35,7 +35,7 @@ def amenity_delete(amenity_id):
     amenity = storage.get(Amenity, amenity_id)
     if amenity is None:
         abort(404)
-    storage.delete(Amenity)
+    storage.delete(amenity)
     storage.save()
     return jsonify({}), 200
 
@@ -52,7 +52,8 @@ def post_amenity():
     return make_response(jsonify(amenity.to_dict()), 201)
 
 
-@app_views.route("/amenities/<amenity_id>", methods=['PUT'], strict_slashes=False)
+@app_views.route("/amenities/<amenity_id>", methods=['PUT'],
+                 strict_slashes=False)
 def put_amenity(amenity_id):
     """update an amenity using PUT"""
     amenity = storage.get(Amenity, amenity_id)
