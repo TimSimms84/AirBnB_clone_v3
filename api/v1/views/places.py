@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-Task 9
+Task 11
 """
 
 from models.place import Place
@@ -34,7 +34,7 @@ def place_by_id(place_id=None):
     if place_id:
         place = storage.get(Place, place_id)
         if place:
-            return place.to_dict()
+            return jsonify(place.to_dict())
         else:
             return abort(404)
 
@@ -43,6 +43,7 @@ def place_by_id(place_id=None):
                  strict_slashes=False)
 def place_delete(place_id):
     """deletes a place by ID"""
+
     place = storage.get(Place, place_id)
     if place is None:
         abort(404)
