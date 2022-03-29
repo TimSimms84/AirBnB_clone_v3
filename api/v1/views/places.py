@@ -31,12 +31,12 @@ def place(city_id=None):
 @app_views.route("/places/place_id", methods=['GET'],
                  strict_slashes=False)
 def place_by_id(place_id=None):
-        if place_id:
-            place = storage.get(Place, place_id)
-            if place:
-                return place.to_dict()
-            else:
-                return abort(404)
+    if place_id:
+        place = storage.get(Place, place_id)
+        if place:
+            return place.to_dict()
+        else:
+            return abort(404)
 
 
 @app_views.route("/place/<place_id>", methods=['DELETE'],
@@ -71,10 +71,6 @@ def post_place(city_id):
     newPlace = Place(**place)
     place.save()
     return make_response(jsonify(newPlace.to_dict()), 201)
-
-
-
-
 
 
 @app_views.route("/places/<place_id>", methods=['PUT'],
