@@ -48,7 +48,7 @@ def place_delete(place_id):
         abort(404)
     storage.delete(place)
     storage.save()
-    return jsonify({}), 200
+    return make_response(jsonify({}), 200)
 
 
 @app_views.route("/cities/<city_id>/places", methods=['POST'],
@@ -80,10 +80,10 @@ def put_place(place_id):
     """update an place using PUT"""
     place = storage.get(Place, place_id)
     if place is None:
-        abort(404)
+        return abort(404)
     if not request.get_json():
         return make_response(jsonify({"error": "Not a JSON"}), 400)
-    notThese = ["id", "created_at", "updated_at"]
+    notThese = ["id", "created_at", "updated_at", "city_id", "user_id"]
     data = request.get_json()
     for key, value in data.items():
         if key not in notThese:
