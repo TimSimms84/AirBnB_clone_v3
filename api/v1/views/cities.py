@@ -26,14 +26,15 @@ def cities_list(state_id=None):
     else:
         return abort(404)
 
-@app_views.route("/cities/<city_id>", methods=['GET'])
+
+@app_views.route("/cities/<city_id>",
+                 methods=['GET'])
 def city_by_id(city_id):
     if city_id:
         city = storage.get(City, city_id)
         if city is None:
             return abort(404)
         return city.to_dict()
-
 
 
 @app_views.route("/cities/<city_id>", methods=['DELETE'])
@@ -49,7 +50,8 @@ def city_delete(city_id):
             return abort(404)
 
 
-@app_views.route("/states/<state_id>/cities/", methods=['POST'], strict_slashes=False)
+@app_views.route("/states/<state_id>/cities/", methods=['POST'],
+                 strict_slashes=False)
 def post_city(state_id):
     """add state using POST"""
     if not request.get_json():
