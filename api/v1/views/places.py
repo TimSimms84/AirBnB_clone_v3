@@ -13,7 +13,7 @@ from models import storage
 
 @app_views.route("/cities/<city_id>/places", methods=['GET'],
                  strict_slashes=False)
-def place(city_id=None):
+def place_all(city_id=None):
     """Returns all places or a place by specific ID"""
     if city_id:
         city = storage.get(City, city_id)
@@ -62,14 +62,14 @@ def post_place(city_id):
     places = request.get_json()
     if 'user_id' not in places:
         return make_response(jsonify({"error": "Missing user_id"}), 400)
-    user = storage.get(User, place['user_id'])
+    user = storage.get(User, places['user_id'])
     if user is None:
         abort(404)
     if 'name' not in places:
         return make_response(jsonify({"error": "Missing name"}), 400)
-    place['city_id'] = city_id
-    newPlace = Place(**place)
-    place.save()
+    places['city_id'] = city_id
+    newPlace = Place(**places)
+    places.save()
     return make_response(jsonify(newPlace.to_dict()), 201)
 
 
