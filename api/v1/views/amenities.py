@@ -67,4 +67,4 @@ def put_amenity(amenity_id):
         if key not in notThese:
             setattr(amenity, key, value)
     storage.save()
-    return make_response(jsonify(amenity.to_dict()), 400)
+    return jsonify(amenity.to_dict())
