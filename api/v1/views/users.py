@@ -46,8 +46,10 @@ def post_user():
     """add user using POST"""
     if not request.get_json():
         return make_response(jsonify({"error": "Not a JSON"}), 400)
-    if "name" not in request.get_json():
-        return make_response(jsonify({"error": "Missing Name"}), 400)
+    if "email" not in request.get_json():
+        return make_response(jsonify({"error": "Missing email"}), 400)
+    if "password" not in request.get_json():
+        return make_response(jsonify({"error": "Missing password"}), 400)
     user = User(**request.get_json())
     user.save()
     return make_response(jsonify(user.to_dict()), 201)
@@ -62,10 +64,10 @@ def put_amenity(user_id):
         abort(404)
     if not request.get_json():
         return make_response(jsonify({"error": "Not a JSON"}), 400)
-    notThese = ["id", "created_at", "updated_at"]
+    notThese = ["id", "email", "created_at", "updated_at"]
     data = request.get_json()
     for key, value in data.items():
         if key not in notThese:
             setattr(user, key, value)
     storage.save()
-    return jsonify(user.to_dict())
+    return make_response(jsonify(user.to_dict()), 200)
