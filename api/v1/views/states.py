@@ -18,9 +18,9 @@ def states(state_id=None):
     if state_id:
         obj = storage.get(State, state_id)
         if obj is not None:
-            return obj.to_dict()
+            return jsonify(obj.to_dict())
         else:
-            return abort(404)
+            abort(404)
     else:
         states = storage.all(State)
         statelist = []
