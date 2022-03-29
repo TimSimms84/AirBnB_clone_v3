@@ -1,23 +1,27 @@
 #!/usr/bin/python3
 """Task 8"""
 
-import re
+
 from flask import jsonify, request, make_response, abort
 from api.v1.views import app_views
 from models.city import City
 from models.state import State
 from models import storage
-from requests import request
+
 
 @app_views.route("/cities", methods=['GET'], strict_slashes=False)
-@app_views.route("/states/<state_id>/cities", methods=['GET'], strict_slashes=False)
+@app_views.route("/states/<state_id>/cities", methods=['GET'],
+                 strict_slashes=False)
 def cities_list(state_id=None):
     """Returns all cities or a single city by State ID"""
 
     if state_id:
-        obj = storage.get(City, state_id)
+        obj = storage.get(State, state_id)
         if obj is not None:
-            return obj.to_dict()
+            cities_list = []
+            for city in obj.cities:
+                cities_list.append(city.to_dict())
+            return jsonify(cities_list)
         else:
             return abort(404)
     else:
@@ -26,6 +30,7 @@ def cities_list(state_id=None):
         for city in citys.values():
             citylist.append(city.to_dict())
         return jsonify(citylist)
+
 
 @app_views.route("/cities/<city_id>", methods=['DELETE'])
 def city_delete(city_id):
@@ -36,6 +41,7 @@ def city_delete(city_id):
             storage.delete(obj)
         else:
             return abort(404)
+
 
 @app_views.route("/cities/", methods=['POST'], strict_slashes=False)
 def post_city():
@@ -48,7 +54,9 @@ def post_city():
     city.save()
     return make_response(jsonify(city.to_dict()), 201)
 
-@app_views.route("/states/<state_id>/cities", methods=['PUT'], strict_slashes=False)
+
+@app_views.route("/states/<state_id>/cities", methods=['PUT'],
+                 strict_slashes=False)
 def put_city(state_id):
     """update a state using PUT"""
     city = storage.get(City, state_id)
