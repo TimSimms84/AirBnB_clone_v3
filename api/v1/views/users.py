@@ -3,7 +3,6 @@
 Task 10
 """
 
-from AirBnB_clone_v3.models import user
 from models.user import User
 from api.v1.views import app_views
 from flask import jsonify, request, make_response, abort
