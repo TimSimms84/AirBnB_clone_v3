@@ -2,15 +2,17 @@
 """
 Task 9
 """
+
 from models.amenity import Amenity
-from flask import jsonify, request, make_response, abort
 from api.v1.views import app_views
+from flask import jsonify, request, make_response, abort
 from models import storage
 
 
 @app_views.route("/amenities", methods=['GET'], strict_slashes=False)
-@app_views.route("/amenities/<amenity_id>", methods=['GET'], strict_slashes=False)
-def states(amenity_id=None):
+@app_views.route("/amenities/<amenity_id>", methods=['GET'],
+                 strict_slashes=False)
+def amenities(amenity_id=None):
     """Returns all amenities or an amenity by specific ID"""
     if amenity_id:
         obj = storage.get(Amenity, amenity_id)
