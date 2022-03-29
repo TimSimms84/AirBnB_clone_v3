@@ -25,10 +25,10 @@ def place_all(city_id=None):
                     placeList.append(value.to_dict())
                 return jsonify(placeList)
         else:
-            abort(404)
+            return abort(404)
 
 
-@app_views.route("/places/place_id", methods=['GET'],
+@app_views.route("/places/<place_id>", methods=['GET'],
                  strict_slashes=False)
 def place_by_id(place_id=None):
     if place_id:
