@@ -18,12 +18,8 @@ def place_all(city_id=None):
     if city_id:
         city = storage.get(City, city_id)
         if city is not None:
-            placeList = []
-            places = storage.all(Place)
-            for key, value in places.items():
-                if value.city_id == city_id:
-                    placeList.append(value.to_dict())
-                return jsonify(placeList)
+            placeList = [place.to_dict() for place in city.places]
+            return jsonify(placeList)
         else:
             return abort(404)
 
@@ -59,14 +55,13 @@ def post_place(city_id):
     city = storage.get(City, city_id)
     if city is None:
         return abort(404)
-    places = request.get_json()
-    if places is None:
+    if not request.get_json():
         return make_response(jsonify({"error": "Not a JSON"}), 400)
-    if 'user_id' not in places:
+    if 'user_id' not in request.get_json():
         return make_response(jsonify({"error": "Missing user_id"}), 400)
-    
-    if 'name' not in places:
+    if 'name' not in request.get_json():
         return make_response(jsonify({"error": "Missing name"}), 400)
+    places = request.get_json()
     user = storage.get(User, places['user_id'])
     if user is None:
         abort(404)
@@ -83,10 +78,10 @@ def put_place(place_id):
     place = storage.get(Place, place_id)
     if place is None:
         return abort(404)
-    if not request.get_json():
+    data = request.get_json()
+    if data is None:
         return make_response(jsonify({"error": "Not a JSON"}), 400)
     notThese = ["id", "created_at", "updated_at", "city_id", "user_id"]
-    data = request.get_json()
     for key, value in data.items():
         if key not in notThese:
             setattr(place, key, value)
