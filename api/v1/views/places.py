@@ -72,7 +72,7 @@ def post_place(city_id):
         abort(404)
     places['city_id'] = city_id
     newPlace = Place(**places)
-    places.save()
+    newPlace.save()
     return make_response(jsonify(newPlace.to_dict()), 201)
 
 
